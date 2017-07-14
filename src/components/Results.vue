@@ -9,7 +9,7 @@
     import stopNumber from "./stopNumber.vue"
     import Message from "./Message.vue"
 
-    var API_URL = "https://i7oo910i54.execute-api.us-east-1.amazonaws.com/prod/find/"
+    var API_URL = "https://w6c3yoocsl.execute-api.us-east-1.amazonaws.com/Prod/find/"
     // TODO: set local API when running dev
     //var API_URL = "http://localhost:8000/find/"
     export default {
@@ -22,14 +22,16 @@
         methods:{
              queryApi: function(q){
                 this.$emit("ajaxStarted")
-                this.$http.post(API_URL, {"query":q})
+                this.$http.post(API_URL, 'Body='+q)
                 .then((response) => {
                     let data = response.body
+                    console.log("data: ", data)
                     this.apiData = {
                         message: data.message,
-                        data: (data.sessionAttributes && data.sessionAttributes.data) && JSON.parse(data.sessionAttributes.data),
+                        data: (data.sessionAttributes && data.sessionAttributes.data) && data.sessionAttributes.data,
                         intentName: data.intentName
                     }
+                    console.log("api data", this.apiData)
                     this.$emit("dataLoaded")
                 })
             },
@@ -50,11 +52,11 @@
                     Intersection: "findAddress",
                     findStreets: "findAddress",
                     stopNumber: "stopNumber",
-                    When_is_the_bus: "stopNumber"
+                    When_is_the_bus_at_stop: "stopNumber"
                 }
               return (this.apiData && intentMap[this.apiData.intentName]) || "message"
             },
-        },  
+        },
         watch: {
             'query': function(val){
                 if (this.query) {
